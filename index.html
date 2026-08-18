@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Warung Bu Jeffry</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    .animate-pop {
+      animation: pop 0.3s ease-out;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(0.95);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-[#F2F7F4] text-slate-800 antialiased overflow-x-hidden w-full">
+  <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-lg border-b border-slate-100 w-full">
+    <div class="max-w-6xl mx-auto px-4 py-3 w-full">
+      <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center gap-3">
+          <img src="https://lh3.googleusercontent.com/d/14UwFMfDdksGaXD-6hAHqSiHPQAKPbe_w" class="h-10 w-10 object-contain">
+          <div>
+            <h1 class="text-sm font-extrabold text-[#1B4D3E]">WARUNG BU JEFFRY</h1>
+            <!-- Status Toko Otomatis -->
+            <p id="toko-status" class="text-[10px] font-bold"></p>
+          </div>
+        </div>
+        <button onclick="toggleCartModal()" class="bg-[#1B4D3E] text-white p-2 px-4 rounded-xl text-xs font-bold flex items-center gap-2">
+          <i class="fa-solid fa-cart-shopping"></i> <span id="cart-count">0</span>
+        </button>
+      </div>
+
+      <div class="flex gap-2 w-full">
+        <input type="text" id="search-input" onkeyup="filterMenu()" placeholder="Cari menu..." class="w-full p-2 text-xs rounded-lg border border-slate-200 outline-none focus:ring-2 focus:ring-[#1B4D3E]">
+        <select id="filter-kategori" onchange="filterMenu()" class="p-2 text-xs rounded-lg border border-slate-200 outline-none">
+          <option value="Semua">Semua Kategori</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-6 w-full">
+    <div class="bg-[#1B4D3E] p-6 rounded-3xl mb-8 border border-[#143c2f] text-white w-full shadow-lg">
+      <h4 class="font-extrabold mb-4 flex items-center gap-2 text-white">
+        <i class="fa-solid fa-clipboard-list text-[#85E3B9]"></i> Daftar Pilihan Lauk
+      </h4>
+      <div class="grid grid-cols-2 gap-2 text-xs text-emerald-100">
+        <p>• Ayam Bakar / Goreng</p>
+        <p>• Daging Rendang</p>
+        <p>• Sambal Goreng Ati</p>
+        <p>• Capcay / Tumis Sayur</p>
+      </div>
+      <p class="text-[10px] text-emerald-200 mt-4">*Tulis pilihan lauk Anda di kolom catatan saat checkout.</p>
+    </div>
+
+    <div class="flex items-center justify-between mb-8">
+      <h3 class="text-xl font-extrabold flex items-center gap-2 text-slate-900">
+        <span class="w-2 h-8 bg-[#1B4D3E] rounded-full"></span> Menu Spesial
+      </h3>
+    </div>
+
+    <div id="menu-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 w-full">
+      <div class="col-span-full text-center py-20">
+        <div class="inline-block w-8 h-8 border-4 border-[#1B4D3E] border-t-transparent rounded-full animate-spin">
+        </div>
+        <p class="mt-4 font-bold text-slate-400">Menyiapkan masakan...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Tombol Mengapung WhatsApp dipindah ke sini dengan benar -->
+  <a href="https://wa.me/6282123459" target="_blank"
+    class="fixed bottom-6 right-6 bg-green-600 text-white px-4 h-14 rounded-full shadow-2xl flex items-center gap-2 text-xl hover:scale-105 transition-all z-40 group">
+    <span class="max-w-0 overflow-hidden whitespace-nowrap text-sm font-bold transition-all duration-300 group-hover:max-w-xs group-hover:pr-2">
+      Hubungi Penjual Via whatsapp
+    </span>
+    <i class="fa-brands fa-whatsapp text-2xl"></i>
+  </a>
+
+  <div id="cart-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[60] flex justify-end pointer-events-auto w-full">
+    <div class="bg-white w-full max-w-md h-full shadow-2xl flex flex-col animate-pop">
+      <div class="p-6 border-b flex justify-between items-center">
+        <h3 class="font-extrabold text-xl">Pesanan Kamu</h3>
+        <button onclick="toggleCartModal()" class="text-slate-400 hover:text-slate-900"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+
+      <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+
+      <div class="p-6 bg-slate-50 border-t space-y-4 overflow-y-auto max-h-[65vh]">
+        <div class="space-y-3">
+          <input type="text" id="cust-nama" placeholder="Nama Anda" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#1B4D3E] outline-none text-sm">
+          <input type="tel" id="cust-wa" placeholder="No. WhatsApp (0812...)" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-[#1B4D3E] outline-none text-sm">
+
+          <select id="cust-ongkir" onchange="updateTotal()" class="w-full p-3 rounded-xl border border-slate-200 text-sm bg-white focus:ring-2 focus:ring-[#1B4D3E] outline-none">
+                <option value="">Memuat lokasi pengiriman...</option>
+            </select>
+
+          <textarea id="cust-alamat" 
+          placeholder="Alamat Lengkap (Nama Jalan, No Rumah, RT/RW)" 
+          class="w-full p-3 rounded-xl border border-slate-200 text-sm h-16 focus:ring-2 focus:ring-[#1B4D3E] outline-none"
+          style="position: relative; z-index: 1000 !important; pointer-events: auto !important;"></textarea>
+
+          <textarea id="cust-catatan" 
+                placeholder="Catatan Tambahan (Pilihan lauk catering, tanggal, dll)" 
+                class="w-full p-3 rounded-xl border border-slate-200 text-sm h-16 focus:ring-2 focus:ring-[#1B4D3E] outline-none"
+                style="position: relative; z-index: 1000 !important; pointer-events: auto !important;"></textarea>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 mb-1">Metode Pembayaran</label>
+            <select id="cust-payment" class="w-full p-3 rounded-xl border border-slate-200 text-sm bg-white w-full">
+                <option value="COD">COD (Bayar di Tempat)</option>
+                <option value="Transfer Bank">Transfer Bank</option>
+                <option value="QRIS">QRIS (E-Wallet)</option>
+              </select>
+          </div>
+        </div>
+
+        <div class="border-t border-dashed pt-4">
+          <div class="flex justify-between text-sm"><span>Total Menu</span><span id="summary-subtotal">Rp 0</span></div>
+          <div class="flex justify-between text-sm"><span>Ongkos Kirim Jarak</span><span id="summary-ongkir">Rp 0</span>
+          </div>
+          <div class="flex justify-between font-extrabold text-lg mt-2 text-slate-900">
+            <span>Grand Total</span><span id="summary-total">Rp 0</span>
+          </div>
+        </div>
+
+        <button id="btn-checkout" onclick="checkout()" class="w-full bg-[#1B4D3E] hover:bg-[#143c2f] text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-900/20 transition-all flex items-center justify-center gap-2">
+          PESAN SEKARANG VIA WA
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbykf6Nwyfe95HBsgDJhbfftjlXMR2hUgwWdQAJN4cQ8UeWLydvl52AlW-oBD8qmnoqsJA/exec"; 
+    let dbMenu = [];
+    let cart = []; 
+
+    document.addEventListener("DOMContentLoaded", () => {
+      cart = [];
+      updateCartUI();
+      cekStatusToko();
+      muatDataMenu();
+    });
+
+    function muatDataMenu() {
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "getInitialData" })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if (result.status === "success") {
+          dbMenu = result.data.menu;
+          renderMenu(dbMenu);
+          updateKategoriDropdown();
+
+          const selectElement = document.getElementById("cust-ongkir");
+          let htmlOptions = `<option value="">Pilih Wilayah / Kecamatan Pengiriman</option>`;
+          result.data.ongkir.forEach(item => {
+            htmlOptions += `<option value="${item.totalOngkir}">${item.kecamatan}</option>`;
+          });
+          selectElement.innerHTML = htmlOptions;
+        }
+      })
+      .catch(err => console.error("Gagal memuat data:", err));
+    }
+
+    function renderMenu(items) {
+      const data = items || dbMenu;
+      const container = document.getElementById("menu-container");
+      if (!data || data.length === 0) {
+        container.innerHTML = `<p class="col-span-full text-center py-10">Semua menu sedang habis / tidak Tersedia.</p>`;
+        return;
+      }
+      container.innerHTML = data.map(item => `
+        <div class="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all group w-full">
+          <div class="relative h-28 md:h-36 overflow-hidden w-full">
+            <img src="${item.gambar}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+            <div class="absolute top-2 right-2 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold shadow-sm text-[#1B4D3E]">${item.kategori}</div>
+            <div class="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-0.5 rounded text-[10px]">
+              ${item.stokLabel}
+            </div>
+          </div>
+          <div class="p-4">
+            <h4 class="font-bold text-sm text-slate-900 truncate">${item.nama}</h4>
+            <p class="text-[#1B4D3E] font-extrabold text-sm mt-1">Rp ${parseInt(item.harga).toLocaleString('id-ID')}</p>
+            <button onclick="addToCart('${item.id}')" class="w-full mt-3 bg-slate-50 hover:bg-[#1B4D3E] hover:text-white text-slate-900 py-2 rounded-xl text-xs font-bold transition-colors">
+              + Tambah
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterMenu() {
+      const searchTerm = document.getElementById("search-input").value.toLowerCase().trim();
+      const selectedKategori = document.getElementById("filter-kategori").value;
+
+      const filtered = dbMenu.filter(item => {
+        const namaMenu = item.nama.toLowerCase();
+        const matchesSearch = namaMenu.includes(searchTerm);
+        const matchesKategori = (selectedKategori === "Semua" || item.kategori === selectedKategori);
+        return matchesSearch && matchesKategori;
+      });
+
+      renderMenu(filtered);
+    }
+
+    function updateKategoriDropdown() {
+      const select = document.getElementById("filter-kategori");
+      if(!select) return;
+
+      const kategoriList = [...new Set(dbMenu.map(m => m.kategori.trim()))];
+
+      select.innerHTML = '<option value="Semua">Semua Kategori</option>';
+      kategoriList.forEach(k => {
+        select.innerHTML += `<option value="${k}">${k}</option>`;
+      });
+    }
+
+    function cekStatusToko() {
+      const jam = new Date().getHours();
+      const statusEl = document.getElementById("toko-status");
+      if (!statusEl) return;
+      if (jam >= 8 && jam < 16) {
+        statusEl.innerHTML = '<span class="text-emerald-600"><i class="fa-solid fa-circle text-[8px] mr-1"></i>BUKA</span>';
+      } else {
+        statusEl.innerHTML = '<span class="text-red-600"><i class="fa-solid fa-circle text-[8px] mr-1"></i>TUTUP</span>';
+        const btn = document.getElementById("btn-checkout");
+        if(btn) {
+            btn.disabled = true;
+            btn.innerText = "TOKO SEDANG TUTUP";
+            btn.classList.replace("bg-[#1B4D3E]", "bg-slate-400");
+        }
+      }
+    }
+
+    function addToCart(id) {
+      const product = dbMenu.find(m => m.id === id.toString());
+      if (!product) return;
+
+      const inCart = cart.find(c => c.id === id.toString());
+
+      if (inCart) {
+        if (inCart.qty >= product.stok) {
+          alert(`Maaf, jumlah pembelian tidak bisa melebihi sisa stok (${product.stok}).`);
+          return;
+        }
+        inCart.qty++;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+
+      updateCartUI();
+
+      const cartBtn = document.querySelector(`button[onclick="addToCart('${id}')"]`);
+      if(cartBtn) {
+        const originalText = cartBtn.innerText;
+        cartBtn.innerText = "✓ Berhasil";
+        cartBtn.classList.add("bg-green-600", "text-white");
+        setTimeout(() => {
+          cartBtn.innerText = originalText;
+          cartBtn.classList.remove("bg-green-600", "text-white");
+        }, 600);
+      }
+    }
+
+    function updateCartUI() {
+      const totalItems = cart.reduce((acc, curr) => acc + curr.qty, 0);
+      document.getElementById("cart-count").innerText = totalItems;
+
+      const container = document.getElementById("cart-items");
+      if (cart.length === 0) {
+        container.innerHTML = `<div class="text-center text-slate-400 py-12"><i class="fa-solid fa-basket-shopping text-3xl mb-2 text-slate-300"></i><p class="text-sm">Keranjang masih kosong.</p></div>`;
+      } else {
+        container.innerHTML = cart.map((item, index) => `
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div class="flex-1 pr-2">
+              <h5 class="font-bold text-sm text-slate-800">${item.nama}</h5>
+              <p class="text-xs text-[#1B4D3E] font-bold">Rp ${parseInt(item.harga).toLocaleString('id-ID')}</p>
+              <p class="text-[10px] text-slate-400">Sisa Stok: ${item.stok}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="updateQty(${index}, -1)" class="w-7 h-7 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm font-bold">-</button>
+              <span class="font-bold text-sm w-4 text-center">${item.qty}</span>
+              <button onclick="updateQty(${index}, 1)" class="w-7 h-7 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm font-bold">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+      updateTotal();
+    }
+
+    function updateQty(index, val) {
+      const item = cart[index];
+      if (val > 0 && item.qty >= item.stok) {
+        alert(`Jumlah tidak bisa melebihi sisa stok (${item.stok}).`);
+        return;
+      }
+      item.qty += val;
+      if (item.qty <= 0) cart.splice(index, 1);
+      updateCartUI();
+    }
+
+    function updateTotal() {
+      const subtotal = cart.reduce((acc, curr) => acc + (curr.harga * curr.qty), 0);
+      const ongkir = parseInt(document.getElementById("cust-ongkir").value) || 0;
+      const total = subtotal + ongkir;
+
+      document.getElementById("summary-subtotal").innerText = "Rp " + subtotal.toLocaleString('id-ID');
+      document.getElementById("summary-ongkir").innerText = "Rp " + ongkir.toLocaleString('id-ID');
+      document.getElementById("summary-total").innerText = "Rp " + total.toLocaleString('id-ID');
+    }
+
+    function toggleCartModal() {
+      document.getElementById("cart-modal").classList.toggle("hidden");
+    }
+
+    function checkout() {
+      const nama = document.getElementById("cust-nama").value.trim();
+      const wa = document.getElementById("cust-wa").value.trim();
+      const alamat = document.getElementById("cust-alamat").value.trim();
+
+      const selectOngkir = document.getElementById("cust-ongkir");
+      const ongkirValue = selectOngkir.value;
+      const kecamatanText = selectOngkir.options[selectOngkir.selectedIndex].text;
+
+      const payment = document.getElementById("cust-payment").value;
+
+      if (!nama || !wa || !alamat || cart.length === 0 || ongkirValue === "") {
+        alert("Mohon isi semua data diri, pilih wilayah pengiriman, dan isi keranjang!");
+        return;
+      }
+
+      const ongkir = parseInt(ongkirValue);
+      const btn = document.getElementById("btn-checkout");
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Memproses Pesanan...`;
+
+      const subtotal = cart.reduce((acc, curr) => acc + (curr.harga * curr.qty), 0);
+      const grandTotal = subtotal + ongkir;
+
+      const fullAlamat = `${alamat} (${kecamatanText})`;
+
+      fetch(WEB_APP_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "submitOrder",
+          customerData: { nama, whatsapp: wa, alamat: fullAlamat },
+          cartItems: cart,
+          paymentMethod: payment,
+          totalOngkir: ongkir,
+          grandTotal: grandTotal
+        })
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.status === "success") {
+          const res = result.data; 
+
+          let text = `*PESANAN WARUNG BU JEFFRY*\n\n`;
+          text += `👤 *Nama:* ${nama}\n`;
+          text += `📱 *WA:* ${wa}\n`;
+          text += `📍 *Alamat:* ${fullAlamat}\n`;
+          text += `💳 *Metode Pembayaran:* ${payment}\n`;
+
+          if (payment === "Transfer Bank") {
+            text += `\n🏦 *Silakan Transfer ke:* \n`;
+            text += `• Bank BCA: 1234567890 (a.n. Bu Jeffry)\n`;
+            text += `• Bank Mandiri: 0987654321 (a.n. Bu Jeffry)\n`;
+          } else if (payment === "QRIS") {
+            text += `\n📱 *Pembayaran QRIS:* \n`;
+            text += `Admin akan mengirimkan barcode setelah pesan ini terkirim.\n`;
+          }
+
+          text += `\n🛒 *Detail Belanja:* \n`;
+          cart.forEach(i => text += `- ${i.nama} (x${i.qty})\n`);
+          text += `\n🚚 *Ongkir Jarak:* Rp ${ongkir.toLocaleString('id-ID')}`;
+          text += `\n💰 *Total Akhir:* Rp ${grandTotal.toLocaleString('id-ID')}\n\nMohon segera diproses ya Bu!`;
+
+          const url = `https://wa.me/${res.whatsappAdmin}?text=${encodeURIComponent(text)}`;
+          window.open(url, '_blank');
+
+          cart = []; 
+          updateCartUI(); 
+          updateTotal();
+          toggleCartModal();
+
+          document.getElementById("cust-nama").value = "";
+          document.getElementById("cust-wa").value = "";
+          document.getElementById("cust-alamat").value = "";
+          if (document.getElementById("cust-catatan")) {
+            document.getElementById("cust-catatan").value = "";
+          }
+          selectOngkir.value = "";
+
+          btn.disabled = false;
+          btn.innerText = "PESAN SEKARANG VIA WA";
+
+          muatDataMenu(); 
+        } else {
+          alert("Gagal memproses pesanan: " + result.message);
+          btn.disabled = false;
+          btn.innerText = "PESAN SEKARANG VIA WA";
+        }
+      })
+      .catch(err => {
+        alert("Gagal memproses pesanan akibat gangguan jaringan: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "PESAN SEKARANG VIA WA";
+      });
+    }
+  </script>
+</body>
+</html>
