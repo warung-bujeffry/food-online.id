@@ -1,4 +1,4 @@
-const CACHE_NAME = '3W-v1';
+const CACHE_NAME = '3W-v3';
 
 // Daftar aset lokal yang wajib di-cache saat install
 const assets = [
