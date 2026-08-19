@@ -268,7 +268,7 @@
       const jam = new Date().getHours();
       const statusEl = document.getElementById("toko-status");
       if (!statusEl) return;
-      if (jam >= 8 && jam < 16) {
+      if (jam >= 8 && jam < 20) {
         statusEl.innerHTML = '<span class="text-emerald-600"><i class="fa-solid fa-circle text-[8px] mr-1"></i>BUKA</span>';
       } else {
         statusEl.innerHTML = '<span class="text-red-600"><i class="fa-solid fa-circle text-[8px] mr-1"></i>TUTUP</span>';
